@@ -1,6 +1,8 @@
 # ThecoreFloorplanDesigner
 Short description and motivation.
 
+This uses https://github.com/metafizzy/packery for user interaction. Kudos for the beautiful library.
+
 ## Usage
 How to use my plugin.
 
