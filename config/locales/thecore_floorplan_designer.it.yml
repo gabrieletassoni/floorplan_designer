@@ -1,2 +1,8 @@
 --- 
-it: ~
+it:
+  admin:
+    actions:
+      thecore_floorplan_designer: 
+        menu: "Mappa"
+        breadcrumb: "Mappa"
+        title: "Mappa"

@@ -1,8 +1,60 @@
 <%= breadcrumb %>
 
-<div class="grid" data-packery='{ "itemSelector": ".grid-item" }'>
-  <div class="grid-item"></div>
-  <div class="grid-item"></div>
+<div class="well">
+    <div id="add-item">
+        <i class="fa fa-plus-square"></i>
+    </div>
 </div>
 
+<div class="hidden sample-grid-item">
+    <div class="grid-item" style="width: 144px; height: 144px; background-color: gray;">
+        <div style="margin-top:2%; margin-left:2%;width: 96%;height:96%;background-color:rgba(0, 0, 0, 0.3);">
+            <div class="grid-item-delete pull-right" style="margin-right: 3%;">
+                <i class="fa fa-window-close"></i>
+            </div>
+            <div class="grid-item-content" style="width:100%;height:100%;">
+                &nbsp;
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid">
+</div>
+
+<script src="https://unpkg.com/draggabilly@2/dist/draggabilly.pkgd.min.js"></script>
 <script src="https://unpkg.com/packery@2.1/dist/packery.pkgd.min.js"></script>
+<script>
+    // initialize Packery
+    var $grid = $('.grid').packery({
+        itemSelector: '.grid-item',
+        // columnWidth helps with drop positioning
+        columnWidth: 144,
+        rowHeight: 144
+    });
+    $grid.on('click', '.grid-item-delete', function (event) {
+        // remove clicked element
+        $grid.packery('remove', event.currentTarget.parentElement.parentElement)
+            // shiftLayout remaining item elements
+            //.packery('shiftLayout');
+    });
+    let itemId = 0;
+    const baseWidth = 144;
+    const baseHeight = 144;
+    const baseColor = 'gray';
+    $('#add-item').on('click', function () {
+        // create new item elements
+        // prepend items to grid
+        const baseItem = $(".sample-grid-item .grid-item");
+        let item = baseItem.clone();
+
+        $grid.append(item)
+            // add and lay out newly prepended items
+            .packery('appended', item);
+        $grid.find('.grid-item').each(function (i, gridItem) {
+            var draggie = new Draggabilly(gridItem);
+            // bind drag events to Packery
+            $grid.packery('bindDraggabillyEvents', draggie);
+        });
+    });
+</script>

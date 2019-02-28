@@ -1,2 +1,8 @@
 --- 
-en: ~
+en:
+  admin:
+    actions:
+      thecore_floorplan_designer: 
+        menu: "Floorplan"
+        breadcrumb: "Floorplan"
+        title: "Floorplan"
