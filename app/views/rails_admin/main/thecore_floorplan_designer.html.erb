@@ -1,20 +1,30 @@
 <%= breadcrumb %>
 
 <div class="well">
+    <select id="item-size">
+        <option value="">1x1</option>
+        <option value="height2">1x2</option>
+        <option value="width2">2x1</option>
+        <option value="height3">1x3</option>
+        <option value="width3">3x1</option>
+        <option value="height4">1x4</option>
+        <option value="width4">4x1</option>
+        <option value="width2 height2">2x2</option>
+        <option value="width3 height3">3x3</option>
+        <option value="width4 height4">4x4</option>
+    </select>
     <button id="add-item">
         <i class="fa fa-plus-square"></i>
     </button>
 </div>
 
 <div class="hidden sample-grid-item">
-    <div class="grid-item" style="width: 144px; height: 144px; background-color: gray;">
-        <div style="margin-top:2%; margin-left:2%;width: 96%;height:96%;background-color:rgba(0, 0, 0, 0.3);">
-            <div class="grid-item-delete pull-right" style="margin-right: 3%;">
-                <i class="fa fa-window-close"></i>
-            </div>
-            <div class="grid-item-content" style="width:100%;height:100%;">
-                &nbsp;
-            </div>
+    <div class="grid-item">
+        <div class="grid-item-delete pull-right" style="margin-right: 3%;">
+            <i class="fa fa-window-close"></i>
+        </div>
+        <div class="grid-item-content" style="width:100%;height:100%;">
+            &nbsp;
         </div>
     </div>
 </div>
@@ -22,11 +32,97 @@
 <div class="grid" style="background-color: white;">
 </div>
 
-<!-- INTEGRATE NODE DEPENDENCIES INTO RAILS -->
-<!--https://g3ortega.com/rails/2017/05/30/rails-5-1-and-forward-yarn-on-rails.html -->
-
+<%# 
+INTEGRATE NODE DEPENDENCIES INTO RAILS:
+https://g3ortega.com/rails/2017/05/30/rails-5-1-and-forward-yarn-on-rails.html
+https://phraseapp.com/blog/posts/sharing-assets-between-rails/
+https://github.com/rails/webpacker/blob/master/docs/engines.md
+CDN:
 <script src="https://unpkg.com/draggabilly@2/dist/draggabilly.pkgd.min.js"></script>
-<script src="https://unpkg.com/packery@2.1/dist/packery.pkgd.min.js"></script>
+<script src="https://unpkg.com/packery@2.1/dist/packery.pkgd.min.js"></script> 
+%>
+
+<%#
+https://github.com/rails/webpacker/issues/348
+https://github.com/rails/webpacker/blob/master/docs/engines.md
+%>
+<%= javascript_include_tag "thecore_floorplan_designer/draggabilly.pkgd.min.js"%>
+<%= javascript_include_tag "thecore_floorplan_designer/packery.pkgd.min.js"%>
+<style>
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: sans-serif;
+    }
+
+    .grid {
+        background: #FDD;
+        background: hsla(45, 100%, 144%, 0.2);
+        max-width: 100%;
+    }
+
+    /* clearfix */
+    .grid:after {
+        content: ' ';
+        display: block;
+        clear: both;
+    }
+
+    .grid-item {
+        width: 144px;
+        height: 144px;
+        float: left;
+        background: #C09;
+        border: 4px solid #333;
+        border-color: hsla(0, 0%, 0%, 0.3);
+    }
+
+    .grid-item:hover {
+        border-color: white;
+        cursor: move;
+    }
+
+    .grid-item.width2 {
+        width: 288px;
+        background: #9C0;
+    }
+
+    .grid-item.height2 {
+        height: 288px;
+        background: #0C9;
+    }
+    .grid-item.width3 {
+        width: 432px;
+        background: #9C0;
+    }
+
+    .grid-item.height3 {
+        height: 432px;
+        background: #0C9;
+    }
+
+    .grid-item.height4 {
+        height: 576px;
+        background: #C90;
+    }
+
+    .grid-item.width4 {
+        width: 576px;
+        background: #90C;
+    }
+
+    .grid-item.is-dragging,
+    .grid-item.is-positioning-post-drag {
+        border-color: white;
+        background: #09F;
+        z-index: 2;
+    }
+</style>
+
 <script>
     // initialize Packery
     var $grid = $('.grid').packery({
@@ -35,29 +131,37 @@
         columnWidth: 144,
         rowHeight: 144
     });
+    $grid.find('.grid-item').each(makeEachDraggable);
+
+    function makeEachDraggable(i, itemElem) {
+        // make element draggable with Draggabilly
+        var draggie = new Draggabilly(itemElem);
+        // bind Draggabilly events to Packery
+        $grid.packery('bindDraggabillyEvents', draggie);
+    }
     $grid.on('click', '.grid-item-delete', function (event) {
         // remove clicked element
         $grid.packery('remove', event.currentTarget.parentElement.parentElement)
-            // shiftLayout remaining item elements
-            //.packery('shiftLayout');
+        // shiftLayout remaining item elements
+        //.packery('shiftLayout');
     });
     let itemId = 0;
-    const baseWidth = 144;
-    const baseHeight = 144;
-    const baseColor = 'gray';
+    // const baseWidth = 144;
+    // const baseHeight = 144;
+    // const baseColor = 'gray';
+    // add more items
     $('#add-item').on('click', function () {
         // create new item elements
         // prepend items to grid
         const baseItem = $(".sample-grid-item .grid-item");
         let item = baseItem.clone();
 
+        const sizeClass = $( "#item-size" ).val();
+        item.addClass(sizeClass);
+
         $grid.append(item)
             // add and lay out newly prepended items
             .packery('appended', item);
-        $grid.find('.grid-item').each(function (i, gridItem) {
-            var draggie = new Draggabilly(gridItem);
-            // bind drag events to Packery
-            $grid.packery('bindDraggabillyEvents', draggie);
-        });
+        item.each( makeEachDraggable );
     });
 </script>

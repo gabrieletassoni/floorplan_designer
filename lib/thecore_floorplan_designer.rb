@@ -1,6 +1,7 @@
 require 'thecore_floorplan_designer/engine'
 
 require 'thecore'
+require 'rails_admin_ui_layout_taris'
 module ThecoreFloorplanDesigner
   # Your code goes here...
 end
