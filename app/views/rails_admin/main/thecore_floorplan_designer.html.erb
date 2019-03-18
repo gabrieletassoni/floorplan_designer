@@ -55,6 +55,12 @@ https://github.com/rails/webpacker/blob/master/docs/engines.md
         box-sizing: border-box;
     }
 
+    html { 
+        overflow-y: scroll;
+        margin: 0;
+        padding: 0;
+    }
+
     body {
         font-family: sans-serif;
     }
@@ -73,11 +79,11 @@ https://github.com/rails/webpacker/blob/master/docs/engines.md
     }
 
     .grid-item {
-        width: 144px;
+        width: 20%;
         height: 144px;
         float: left;
         background: #C09;
-        border: 4px solid #333;
+        border: 2px solid #333;
         border-color: hsla(0, 0%, 0%, 0.3);
     }
 
@@ -87,7 +93,7 @@ https://github.com/rails/webpacker/blob/master/docs/engines.md
     }
 
     .grid-item.width2 {
-        width: 288px;
+        width: 40%;
         background: #9C0;
     }
 
@@ -96,7 +102,7 @@ https://github.com/rails/webpacker/blob/master/docs/engines.md
         background: #0C9;
     }
     .grid-item.width3 {
-        width: 432px;
+        width: 60%;
         background: #9C0;
     }
 
@@ -111,7 +117,17 @@ https://github.com/rails/webpacker/blob/master/docs/engines.md
     }
 
     .grid-item.width4 {
-        width: 576px;
+        width: 80%;
+        background: #90C;
+    }
+
+    .grid-item.height5 {
+        height: 100%;
+        background: #C90;
+    }
+
+    .grid-item.width5 {
+        width: 100%;
         background: #90C;
     }
 
@@ -127,9 +143,10 @@ https://github.com/rails/webpacker/blob/master/docs/engines.md
     // initialize Packery
     var $grid = $('.grid').packery({
         itemSelector: '.grid-item',
+        percentPosition: true,
         // columnWidth helps with drop positioning
-        columnWidth: 144,
-        rowHeight: 144
+        // columnWidth: 144,
+        // rowHeight: 144
     });
     $grid.find('.grid-item').each(makeEachDraggable);
 
