@@ -1,6 +1,123 @@
 <%= breadcrumb %>
+<style>
+    svg {
+        box-sizing: border-box;
+        border: 1px solid rgb(212, 212, 212);
+    }
 
-<div class="well">
+    circle {
+        stroke: rgb(95, 176, 228);
+        stroke-width: 2;
+        fill: rgba(205, 246, 255, 0.3);
+    }
+
+    rect {
+        stroke: rgb(95, 176, 228);
+        stroke-width: 2;
+        fill: rgba(205, 246, 255, 0.3);
+    }
+
+    line {
+        stroke: rgb(212, 212, 212);
+        stroke-width: 1px;
+        shape-rendering: crispEdges;
+    }
+</style>
+
+<div class="grid" style="background-color: white;">
+</div>
+
+<%= javascript_include_tag "thecore_floorplan_designer/d3.v3.min.js"%>
+<%# <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script> %>
+<script>
+    /*
+    $(".grid").width()/960*20=rw
+    */
+    var width = $(".grid").width(),
+        height = 500,
+        resolution = width / 960 * 20, // 20,
+        r = width / 960 * 15; // 15;
+
+    var points = d3.range(10).map(function () {
+        return {
+            x: round(Math.random() * width, resolution),
+            y: round(Math.random() * height, resolution)
+        };
+    });
+
+    var drag = d3.behavior.drag()
+        .origin(function (d) {
+            return d;
+        })
+        .on('drag', dragged);
+
+    var svg = d3.select('.grid').append('svg')
+        .attr('width', width)
+        .attr('height', height);
+
+    svg.selectAll('.vertical')
+        .data(d3.range(1, width / resolution))
+        .enter().append('line')
+        .attr('class', 'vertical')
+        .attr('x1', function (d) {
+            return d * resolution;
+        })
+        .attr('y1', 0)
+        .attr('x2', function (d) {
+            return d * resolution;
+        })
+        .attr('y2', height);
+
+    svg.selectAll('.horizontal')
+        .data(d3.range(1, height / resolution))
+        .enter().append('line')
+        .attr('class', 'horizontal')
+        .attr('x1', 0)
+        .attr('y1', function (d) {
+            return d * resolution;
+        })
+        .attr('x2', width)
+        .attr('y2', function (d) {
+            return d * resolution;
+        });
+
+    // var circles = svg.selectAll('circle')
+    //     .data(points)
+    //     .enter().append('circle')
+    //     .attr('cx', function (d) {
+    //         return d.x;
+    //     })
+    //     .attr('cy', function (d) {
+    //         return d.y;
+    //     })
+    //     .attr('r', r)
+    //     .call(drag);
+
+    let rect = svg.selectAll('circle')
+        .data(points)
+        .enter().append("rect")
+        .attrs({
+            "x": 480,
+            "y": 141,
+            "width": 40,
+            "height": 30
+        });
+        // .style("fill", "blue");
+
+    function dragged(d) {
+        var x = d3.event.x,
+            y = d3.event.y,
+            gridX = round(Math.max(r, Math.min(width - r, x)), resolution),
+            gridY = round(Math.max(r, Math.min(height - r, y)), resolution);
+
+        d3.select(this).attr('cx', d.x = gridX).attr('cy', d.y = gridY);
+    }
+
+    function round(p, n) {
+        return p % n < n / 2 ? p - (p % n) : p + n - (p % n);
+    }
+</script>
+<%# <div class="well">
     <select id="item-size">
         <option value="">1x1</option>
         <option value="height2">1x2</option>
@@ -28,9 +145,7 @@
         </div>
     </div>
 </div>
-
-<div class="grid" style="background-color: white;">
-</div>
+ %>
 
 <%# 
 INTEGRATE NODE DEPENDENCIES INTO RAILS:
@@ -46,9 +161,10 @@ CDN:
 https://github.com/rails/webpacker/issues/348
 https://github.com/rails/webpacker/blob/master/docs/engines.md
 %>
-<%= javascript_include_tag "thecore_floorplan_designer/draggabilly.pkgd.min.js"%>
-<%= javascript_include_tag "thecore_floorplan_designer/packery.pkgd.min.js"%>
-<style>
+<%# https://codepen.io/desandro/pen/PZrXVv %>
+<%# <%= javascript_include_tag "thecore_floorplan_designer/draggabilly.pkgd.min.js" %>
+<%# <%= javascript_include_tag "thecore_floorplan_designer/packery.pkgd.min.js"%>
+<%# <style>
     * {
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
@@ -181,4 +297,4 @@ https://github.com/rails/webpacker/blob/master/docs/engines.md
             .packery('appended', item);
         item.each( makeEachDraggable );
     });
-</script>
+</script> %>
