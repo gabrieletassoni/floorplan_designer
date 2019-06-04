@@ -49,6 +49,8 @@ module RailsAdmin
           proc do # This is needed becaus we sant that this code is re-evaluated each time is called
             # This could be useful to distinguish between ajax calls and restful calls
             if request.xhr?
+            else
+              @map = Floor.first.layout
             end
           end
         end
