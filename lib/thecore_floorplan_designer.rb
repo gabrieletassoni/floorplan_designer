@@ -2,6 +2,7 @@ require 'thecore_floorplan_designer/engine'
 
 require 'thecore'
 require 'rails_admin_ui_layout_taris'
+require 'tracker_models'
 module ThecoreFloorplanDesigner
   # Your code goes here...
 end
@@ -51,6 +52,7 @@ module RailsAdmin
             if request.xhr?
             else
               @map = Floor.first.layout
+              @locations = Location.all
             end
           end
         end

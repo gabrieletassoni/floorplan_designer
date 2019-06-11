@@ -27,4 +27,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'thecore', '~> 1.6'
   spec.add_dependency 'rails_admin_ui_layout_taris', '~> 1.3'
+  spec.add_dependency 'tracker_models', '~> 1.3'
 end
